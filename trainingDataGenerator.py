@@ -1,14 +1,25 @@
 import random
 import converter
-from bit.crypto import ECPrivateKey, ripemd160_sha256, sha256
+import hashlib
+from Crypto.Hash import RIPEMD160
+from bit.crypto import ECPrivateKey, sha256
 
 # private key has 256 bits and public has 160 bits
 bitsSecret = 256
 bitsP2PKH = 160
 
+
+# === FIX RIPEMD160 (compatible Python 3.12 / Kaggle) ===
+def ripemd160_sha256(data: bytes) -> bytes:
+    sha = hashlib.sha256(data).digest()
+    h = RIPEMD160.new()
+    h.update(sha)
+    return h.digest()
+
+
 def createTrainingData(length, seed):
 
-    #init empty arrays
+    # init empty arrays
     secrets_array = []
     xUncompressed_array = []
     xCompressed_array = []
@@ -28,10 +39,12 @@ def createTrainingData(length, seed):
         publicKeyUncompressed = myPrivate.public_key.format(compressed=False)
         publicKeyCompressed = myPrivate.public_key.format(compressed=True)
         
-        # do some ripemd and sha256 magic
+        # do some ripemd and sha256 magic (UNCHANGED LOGIC)
         myHashUncompressed = ripemd160_sha256(publicKeyUncompressed)
         myHashCompressed = ripemd160_sha256(publicKeyCompressed)
-        myHashSegwitAddress = ripemd160_sha256(b'\x00\x14' + ripemd160_sha256(publicKeyCompressed))
+        myHashSegwitAddress = ripemd160_sha256(
+            b'\x00\x14' + ripemd160_sha256(publicKeyCompressed)
+        )
         
         # convert values
         myHashUncompressedAsInt = converter.intFromBytes(myHashUncompressed)
@@ -54,4 +67,9 @@ def createTrainingData(length, seed):
     xCompressed_f32_array = converter.binArray2float32array(xCompressed_bin_array)
     xSegwit_f32_array = converter.binArray2float32array(xSegwit_bin_array)
 
-    return secrets_f32_array, xUncompressed_f32_array, xCompressed_f32_array, xSegwit_f32_array
+    return (
+        secrets_f32_array,
+        xUncompressed_f32_array,
+        xCompressed_f32_array,
+        xSegwit_f32_array
+    )
