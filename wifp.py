@@ -5,7 +5,7 @@ import converter
 
 # ================= CONFIG =================
 bitsP2PKH = 160
-model_file = "model.keras"
+model_file = "prediction.keras"
 
 # contoh HASH160 (20 bytes = 160 bit)
 public_key = "e954123abe469e5d293167aac708da1943e48481"
