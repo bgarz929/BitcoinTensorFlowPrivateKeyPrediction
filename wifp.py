@@ -8,7 +8,7 @@ bitsP2PKH = 160
 model_file = "prediction.keras"
 
 # contoh HASH160 (20 bytes = 160 bit)
-public_key = "e954123abe469e5d293167aac708da1943e48481"
+public_key = "0279be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
 # =========================================
 
 
